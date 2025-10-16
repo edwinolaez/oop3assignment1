@@ -1,6 +1,6 @@
 package shapes;
 
-public class PentagonalPrism
+public class PentagonalPrism extends Prism
 {
     public PentagonalPrism(double height, double side)
     {

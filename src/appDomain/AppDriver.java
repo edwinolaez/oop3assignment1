@@ -1,5 +1,11 @@
 package appDomain;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+import shapes.*;
+
 /**
  * <p>
  * This application driver code is designed to be used as a basis for the
@@ -17,6 +23,93 @@ public class AppDriver
 	 */
 	public static void main( String[] args )
 	{
+		String filePath = null;
+        String sortType = null;
+        String sortAlgorithm = null;
+
+        // Parse command-line arguments
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i].toLowerCase();
+            switch (arg) {
+                case "-f":
+                case "-F":
+                    if (i + 1 < args.length) {
+                        filePath = args[++i];
+                    }
+                    break;
+                case "-t":
+                case "-T":
+                    if (i + 1 < args.length) {
+                        sortType = args[++i].toLowerCase();
+                    }
+                    break;
+                case "-s":
+                case "-S":
+                    if (i + 1 < args.length) {
+                        sortAlgorithm = args[++i].toLowerCase();
+                    }
+                    break;
+            }
+        }
+
+        // Check if essential arguments are provided
+        if (filePath == null || sortType == null || sortAlgorithm == null) {
+            System.out.println("Usage: java -jar sort.jar -f<file_path> -t<sort_type> -s<sort_algorithm>");
+            System.out.println("  -f, -F: File path");
+            System.out.println("  -t, -T: Sort type (h = height, v = volume, a = base area)");
+            System.out.println("  -s, -S: Sort algorithm (b = bubble, s = selection, i = insertion, m = merge, q = quick, z = custom)");
+            return;
+        }
+
+		ArrayList<Shape> shapeList = new ArrayList<>();
+        try (Scanner scanner = new Scanner(new File(filePath))) {
+            int numShapes = scanner.nextInt();
+            scanner.nextLine();
+
+            for (int i = 0; i < numShapes; i++) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(" ");
+                String shapeName = parts[0];
+                double height = Double.parseDouble(parts[1]);
+                double value = Double.parseDouble(parts[2]);
+
+                Shape shape = null;
+                switch (shapeName) {
+                    case "Cylinder":
+                        shape = new Cylinder(height, value);
+                        break;
+                    case "Cone":
+                        shape = new Cone(height, value);
+                        break;
+                    case "Pyramid":
+                        shape = new Pyramid(height, value);
+                        break;
+                    case "SquarePrism":
+                        shape = new SquarePrism(height, value);
+                        break;
+                    case "TriangularPrism":
+                        shape = new TriangularPrism(height, value);
+                        break;
+                    case "PentagonalPrism":
+                        shape = new PentagonalPrism(height, value);
+                        break;
+                    case "OctagonalPrism":
+                        shape = new OctagonalPrism(height, value);
+                        break;
+                }
+                if (shape != null) {
+                    shapeList.add(shape);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: File not found at path '" + filePath + "'. Please check the file path and try again.");
+            return;
+        } catch (Exception e) {
+            System.out.println("Error: An error occurred while reading or parsing the file. Please ensure the file is correctly formatted.");
+            return;
+        }
+
+
 		// TODO Auto-generated method stub
 
 		// refer to demo00 BasicFileIO.java for a simple example on how to
