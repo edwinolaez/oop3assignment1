@@ -3,8 +3,12 @@ package appDomain;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 import shapes.*;
+import utilities.BaseAreaComparator;
+import utilities.Sorting;
+import utilities.VolumeComparator;
 
 /**
  * <p>
@@ -108,6 +112,46 @@ public class AppDriver
             System.out.println("Error: An error occurred while reading or parsing the file. Please ensure the file is correctly formatted.");
             return;
         }
+
+        Shape[] shapes = shapeList.toArray(new Shape[0]);
+        Comparator<Shape> comparator = null;
+
+        switch (sortType) {
+            case "a":
+                comparator = new BaseAreaComparator();
+                break;
+            case "v":
+                comparator = new VolumeComparator();
+                break;
+            case "h":
+				comparator = new HeightComparator();
+            default:
+
+                break;
+        }
+
+        long startTime = System.Time();
+
+        switch (sortAlgorithm) {
+            case "s":
+                Sorting.selectionSort(shapes, comparator);
+                break;
+            case "m":
+                Sorting.mergeSort(shapes, comparator);
+                break;
+            // case "b": Sorting.bubbleSort(shapes, comparator); break;
+            // case "i": Sorting.insertionSort(shapes, comparator); break;
+            // case "q": Sorting.quickSort(shapes, comparator); break;
+            // case "z": Sorting.customSort(shapes, comparator); break;
+            default:
+                System.out.println("Error: Unknown sort algorithm '" + sortAlgorithm + "'.");
+                return;
+        }
+
+        long endTime = System.Time();
+        long duration = (endTime - startTime);
+
+        System.out.println("Sorting finished in " + duration + " seconds.");
 
 
 		// TODO Auto-generated method stub
